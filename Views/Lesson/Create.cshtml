@@ -1,0 +1,346 @@
+﻿@model LearningManagement.ViewModels.LessonViewModel
+
+@{
+    ViewBag.Title = "Add Lesson";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        --primary-hover: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        --bg-gradient: radial-gradient(circle at 50% 0%, #eef2ff 0%, #f8fafc 100%);
+        --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.03);
+        --icon-bg: #eef2ff;
+    }
+
+    body {
+        background: var(--bg-gradient);
+        min-height: 100vh;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: #1e293b;
+    }
+
+    .form-wrapper {
+        min-height: calc(100vh - 100px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 1rem;
+    }
+
+    .card-form {
+        background: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: 32px;
+        box-shadow: var(--card-shadow);
+        max-width: 860px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .card-header-accent {
+        height: 12px;
+        background: var(--primary-gradient);
+    }
+
+    .form-section {
+        padding: 4.5rem 4rem;
+    }
+
+    /* Icon Badge */
+    .form-icon-wrapper {
+        width: 90px;
+        height: 90px;
+        background: var(--icon-bg);
+        border-radius: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+        .form-icon-wrapper i {
+            font-size: 3.5rem !important;
+        }
+
+    .form-header-title {
+        font-size: 3rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.5rem;
+    }
+
+    .course-badge {
+        display: inline-block;
+        background: #eef2ff;
+        color: #4f46e5;
+        font-weight: 700;
+        padding: 0.6rem 1.5rem;
+        border-radius: 20px;
+        border: 2px solid #c7d2fe;
+        margin-top: 1rem;
+        font-size: 1.25rem;
+    }
+
+    /* Standard Labels (Fixed layout) */
+    .custom-label {
+        font-weight: 700;
+        color: #334155;
+        font-size: 1.3rem;
+        margin-bottom: 0.6rem;
+        display: block;
+    }
+
+    /* Large Inputs (Fixed Height issue) */
+    .form-control-large {
+        border-radius: 16px;
+        border: 2px solid #e2e8f0;
+        background-color: #f8fafc;
+        color: #0f172a;
+        font-weight: 600;
+        font-size: 1.35rem; /* Large text inside input */
+        padding: 1.1rem 1.25rem; /* Safe padding instead of forced height */
+        transition: all 0.2s ease-in-out;
+        width: 100%;
+    }
+
+    /* Specific fix for File Inputs */
+    input[type="file"].form-control-large {
+        padding: 0.85rem 1.25rem; /* Slightly less vertical padding for file buttons */
+    }
+
+    textarea.form-control-large {
+        min-height: 180px;
+        resize: vertical;
+    }
+
+    .form-control-large:focus {
+        background-color: #ffffff;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.15);
+        outline: none;
+    }
+
+    /* Checkbox Styling */
+    .checkbox-massive {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 2px solid #cbd5e1;
+        cursor: pointer;
+        margin-top: 0.2rem;
+    }
+
+        .checkbox-massive:checked {
+            background-color: #ef4444;
+            border-color: #ef4444;
+        }
+
+    .checkbox-label-massive {
+        font-size: 1.35rem;
+        font-weight: 800;
+        cursor: pointer;
+        padding-top: 0.1rem;
+    }
+
+    /* Helper Texts */
+    .text-helper {
+        font-size: 1.05rem;
+        color: #64748b;
+        font-weight: 500;
+        margin-top: 0.6rem;
+    }
+
+    .field-validation-error {
+        font-size: 1.15rem;
+        margin-top: 0.5rem;
+        display: block;
+        font-weight: 700;
+        color: #ef4444;
+    }
+
+    /* Action Buttons */
+    .btn-custom-save {
+        background: var(--primary-gradient);
+        border: none;
+        border-radius: 16px;
+        padding: 1.25rem 2.5rem;
+        font-weight: 800;
+        font-size: 1.4rem;
+        box-shadow: 0 12px 24px -6px rgba(99, 102, 241, 0.45);
+        transition: all 0.25s ease;
+        color: #ffffff;
+    }
+
+        .btn-custom-save:hover {
+            background: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px -6px rgba(99, 102, 241, 0.55);
+            color: #ffffff;
+        }
+
+    .btn-custom-cancel {
+        border-radius: 16px;
+        padding: 1.25rem 2.5rem;
+        font-weight: 800;
+        font-size: 1.4rem;
+        border: 3px solid #cbd5e1;
+        color: #475569;
+        background: #ffffff;
+        transition: all 0.2s ease;
+    }
+
+        .btn-custom-cancel:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+            border-color: #94a3b8;
+        }
+
+    /* Mobile Responsive Breakpoints */
+    @@media (max-width: 991px) {
+        .card-form {
+            border-radius: 28px;
+        }
+
+        .form-section {
+            padding: 3rem 2rem;
+        }
+
+        .form-header-title {
+            font-size: 2.5rem;
+        }
+
+        .action-buttons-container {
+            flex-direction: column-reverse;
+            gap: 1.5rem;
+        }
+
+        .btn-custom-save, .btn-custom-cancel {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .form-section {
+            padding: 2rem 1.25rem;
+        }
+
+        .form-control-large {
+            font-size: 1.2rem;
+            padding: 1rem;
+        }
+
+        .custom-label {
+            font-size: 1.15rem;
+        }
+
+        .form-header-title {
+            font-size: 2.25rem;
+        }
+    }
+</style>
+
+<div class="form-wrapper">
+    <div class="card-form">
+        <div class="card-header-accent"></div>
+        <div class="form-section">
+
+            <!-- Header Section -->
+            <div class="text-center mb-5 pb-2">
+                <div class="form-icon-wrapper">
+                    <i class="bi bi-play-btn-fill text-indigo" style="color: #6366f1;"></i>
+                </div>
+                <h3 class="form-header-title text-dark">Add New Lesson</h3>
+                <div class="course-badge text-truncate px-4">
+                    <i class="bi bi-book-half me-2"></i>@Model.CourseName
+                </div>
+            </div>
+
+            @using (Html.BeginForm("Create", "Lesson", FormMethod.Post, new { enctype = "multipart/form-data", id = "createLessonForm" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.CourseId)
+
+                if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger border-0 rounded-4 py-3 px-4 mb-5 d-flex align-items-center" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-3 fs-3 text-danger"></i>
+                        <div class="fw-bold fs-5">
+                            @Html.ValidationSummary(true, "Please resolve the highlighted errors below:")
+                        </div>
+                    </div>
+                }
+
+                <!-- Lesson Title -->
+                <div class="mb-4 pb-2">
+                    <label class="custom-label" for="LessonTitle">Lesson Title</label>
+                    @Html.TextBoxFor(m => m.LessonTitle, new { @class = "form-control-large", id = "LessonTitle", placeholder = "e.g., Introduction to the Topic" })
+                    @Html.ValidationMessageFor(m => m.LessonTitle, "", new { @class = "text-danger ms-1" })
+                </div>
+
+                <!-- Content Area -->
+                <div class="mb-4 pb-2">
+                    <label class="custom-label" for="Content">Lesson Content (Text/HTML)</label>
+                    @Html.TextAreaFor(m => m.Content, new { @class = "form-control-large", id = "Content", placeholder = "Enter text or HTML..." })
+                    <div class="text-helper"><i class="bi bi-info-circle me-1"></i>Optional text or markup description.</div>
+                    @Html.ValidationMessageFor(m => m.Content, "", new { @class = "text-danger ms-1" })
+                </div>
+
+                <!-- Video Upload -->
+                <div class="mb-4 pb-2">
+                    <label class="custom-label" for="UploadedVideo">Upload Video File</label>
+                    @Html.TextBoxFor(m => m.UploadedVideo, new { type = "file", @class = "form-control-large", id = "UploadedVideo", accept = "video/mp4,video/avi" })
+                    <div class="text-helper"><i class="bi bi-camera-video me-1"></i>Accepts .mp4 or .avi formats.</div>
+                    @Html.ValidationMessageFor(m => m.UploadedVideo, "", new { @class = "text-danger ms-1" })
+                </div>
+
+                <!-- PDF Upload -->
+                <div class="mb-4 pb-2">
+                    <label class="custom-label" for="UploadedPdf">Upload PDF Document</label>
+                    <input type="file" name="UploadedPdf" id="UploadedPdf" class="form-control-large" accept="application/pdf" />
+                    <div class="text-helper"><i class="bi bi-file-earmark-pdf me-1"></i>Optional supplementary material.</div>
+                </div>
+
+                <div class="row g-4 mb-5">
+                    <!-- Sequence Order -->
+                    <div class="col-12 col-md-6">
+                        <label class="custom-label" for="SequenceOrder">Sequence Order</label>
+                        @Html.TextBoxFor(m => m.SequenceOrder, new { @class = "form-control-large", id = "SequenceOrder", type = "number", placeholder = "1" })
+                        @Html.ValidationMessageFor(m => m.SequenceOrder, "", new { @class = "text-danger ms-1" })
+                    </div>
+
+                    <!-- Checkpoint Toggle -->
+                    <div class="col-12 col-md-6 d-flex align-items-center">
+                        <div class="form-check d-flex align-items-start gap-3 mt-4 pt-2">
+                            @Html.CheckBoxFor(m => m.IsCheckpoint, new { @class = "form-check-input checkbox-massive flex-shrink-0", id = "checkpointCheck" })
+                            <div>
+                                @Html.LabelFor(m => m.IsCheckpoint, "Is Checkpoint", new { @class = "form-check-label checkbox-label-massive text-danger", @for = "checkpointCheck" })
+                                <div class="text-helper text-danger mt-1">Requires completion to proceed.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons Footer -->
+                <div class="d-flex justify-content-between align-items-center action-buttons-container pt-4 border-top border-secondary border-opacity-10 mt-4">
+                    @Html.ActionLink("Cancel", "Index", "Course", null, new { @class = "btn btn-custom-cancel text-decoration-none" })
+                    <button type="submit" class="btn btn-custom-save d-inline-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        <span>Save Lesson</span>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+}

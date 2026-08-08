@@ -1,0 +1,324 @@
+﻿@model IEnumerable<LearningManagement.Models.Lesson>
+
+@{
+    ViewBag.Title = "Manage Lessons";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        --primary-hover: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        --bg-gradient: radial-gradient(circle at 50% 0%, #eef2ff 0%, #f8fafc 100%);
+        --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.03);
+    }
+
+    body {
+        background: var(--bg-gradient);
+        min-height: 100vh;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: #1e293b;
+        font-size: 1.4rem; /* Massive baseline font size */
+    }
+
+    .management-wrapper {
+        padding: 5rem 1rem 7rem 1rem;
+    }
+
+    /* Page Header (Massive) */
+    .page-title {
+        font-size: 3.25rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #0f172a;
+    }
+
+    .page-subtitle {
+        font-size: 1.5rem;
+        color: #64748b;
+        margin-top: 0.5rem;
+    }
+
+    /* Header Buttons (Ultra Large) */
+    .btn-create-custom {
+        background: var(--primary-gradient);
+        border: none;
+        border-radius: 20px;
+        padding: 1.5rem 2.25rem;
+        font-weight: 800;
+        font-size: 1.4rem;
+        color: #ffffff !important;
+        box-shadow: 0 12px 24px -6px rgba(99, 102, 241, 0.45);
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+    }
+
+        .btn-create-custom:hover {
+            background: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px -6px rgba(99, 102, 241, 0.55);
+            color: #ffffff !important;
+        }
+
+    .btn-back-custom {
+        background: #ffffff;
+        border: 3px solid #cbd5e1;
+        border-radius: 20px;
+        padding: 1.5rem 2.25rem;
+        font-weight: 800;
+        font-size: 1.4rem;
+        color: #475569 !important;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+    }
+
+        .btn-back-custom:hover {
+            background: #f1f5f9;
+            color: #0f172a !important;
+            border-color: #94a3b8;
+        }
+
+    /* Data Table Card (Ultra Large) */
+    .card-table-wrapper {
+        background: #ffffff;
+        border-radius: 32px;
+        box-shadow: var(--card-shadow);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        overflow: hidden;
+        margin-top: 2rem;
+    }
+
+    .table-custom {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .table-custom thead th {
+            background: var(--primary-gradient) !important;
+            color: white;
+            font-weight: 800;
+            font-size: 1.5rem; /* Massive table headers */
+            border: none;
+            padding: 1.75rem 2rem;
+            white-space: nowrap;
+        }
+
+        .table-custom tbody td {
+            padding: 1.75rem 2rem; /* Massive row padding */
+            color: #334155;
+            font-size: 1.4rem; /* Massive row text */
+            font-weight: 600;
+            border-bottom: 1px solid #f1f5f9;
+            background: #ffffff;
+            transition: background 0.2s ease;
+        }
+
+        .table-custom tbody tr:hover td {
+            background: #f8fafc;
+        }
+
+    /* Badges (Massive) */
+    .badge-sequence {
+        background: #f1f5f9;
+        color: #475569;
+        border: 2px solid #e2e8f0;
+        font-weight: 800;
+        font-size: 1.35rem; /* Massive sequence badge */
+        padding: 0.65rem 1.25rem;
+        border-radius: 16px;
+    }
+
+    .badge-status {
+        font-weight: 800;
+        font-size: 1.25rem; /* Massive status badge */
+        padding: 0.5rem 1.25rem;
+        border-radius: 24px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-yes {
+        background: #ecfdf5;
+        color: #059669;
+        border: 2px solid #a7f3d0;
+    }
+
+    .status-no {
+        background: #f8fafc;
+        color: #64748b;
+        border: 2px solid #e2e8f0;
+    }
+
+    .status-checkpoint {
+        background: #fffbeb;
+        color: #d97706;
+        border: 2px solid #fde68a;
+    }
+
+    /* Action Buttons (Table Rows) */
+    .btn-delete {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 2px solid #fecaca;
+        border-radius: 16px;
+        font-weight: 800;
+        font-size: 1.35rem; /* Massive action button */
+        padding: 0.85rem 1.5rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            color: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+    /* Mobile Responsive Breakpoints */
+    @@media (max-width: 991px) {
+        .page-title {
+            font-size: 2.75rem;
+        }
+
+        .table-custom tbody td {
+            padding: 1.5rem;
+        }
+
+        .btn-create-custom, .btn-back-custom {
+            padding: 1.25rem 1.75rem;
+            font-size: 1.3rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .management-wrapper {
+            padding: 2rem 0.5rem;
+        }
+
+        .btn-create-custom, .btn-back-custom {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .button-group {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .card-table-wrapper {
+            border-radius: 24px;
+        }
+    }
+</style>
+
+<div class="container management-wrapper">
+
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-4">
+        <div>
+            <h2 class="page-title mb-2">Manage Lessons</h2>
+            <p class="page-subtitle mb-0">Course: <strong class="text-indigo" style="color: #4f46e5;">@ViewBag.CourseName</strong></p>
+        </div>
+        <div class="d-flex flex-wrap gap-3 button-group">
+            <a href="@Url.Action("Index", "Course")" class="btn-back-custom">
+                <i class="bi bi-arrow-left"></i>
+                <span>Back to Courses</span>
+            </a>
+            <a href="@Url.Action("Create", new { courseId = ViewBag.CourseId })" class="btn-create-custom">
+                <i class="bi bi-plus-circle-fill"></i>
+                <span>Create New Lesson</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Table Container Card -->
+    <div class="card-table-wrapper">
+        <div class="table-responsive">
+            <table class="table table-custom table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 140px;">Order</th>
+                        <th>Lesson Title</th>
+                        <th>Media</th>
+                        <th>Checkpoint</th>
+                        <th class="text-end pe-4" style="width: 180px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="badge-sequence">#@item.SequenceOrder</span>
+                                </td>
+                                <td class="fw-bold text-dark fs-3">@item.LessonTitle</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.VideoUrl))
+                                    {
+                                        <span class="badge-status status-yes">
+                                            <i class="bi bi-camera-video-fill"></i> Video
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-status status-no">
+                                            <i class="bi bi-dash-circle"></i> None
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsCheckpoint == true)
+                                    {
+                                        <span class="badge-status status-checkpoint">
+                                            <i class="bi bi-star-fill"></i> Required
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted fs-4 fw-medium">No</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    @using (Html.BeginForm("Delete", "Lesson", new { id = item.LessonId }, FormMethod.Post, new { style = "display:inline;" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to permanently delete this lesson?');">
+                                            <i class="bi bi-trash3-fill"></i>
+                                            <span>Delete</span>
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="text-muted d-flex flex-column align-items-center justify-content-center my-5">
+                                    <i class="bi bi-collection-play fs-1 mb-4 opacity-50" style="font-size: 4rem !important;"></i>
+                                    <span class="fs-3 fw-semibold">No lessons found for this course.</span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
