@@ -1,0 +1,450 @@
+﻿@model LearningManagement.ViewModels.AdminDashboardViewModel
+@using System.Web.Script.Serialization
+
+@{
+    ViewBag.Title = "Admin Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Serialize C# lists to JSON for Chart.js processing
+    var jsSerializer = new JavaScriptSerializer();
+    var labelsJson = jsSerializer.Serialize(Model.ChartLabels);
+    var dataJson = jsSerializer.Serialize(Model.ChartData);
+}
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        --primary-hover: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --info-gradient: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        --bg-gradient: radial-gradient(circle at 50% 0%, #eef2ff 0%, #f8fafc 100%);
+        --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.03);
+    }
+
+    body {
+        background: var(--bg-gradient);
+        min-height: 100vh;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: #1e293b;
+        font-size: 1.4rem; /* Massive baseline font size */
+    }
+
+    .dashboard-wrapper {
+        padding: 5rem 1rem 7rem 1rem;
+    }
+
+    /* Page Header */
+    .page-title {
+        font-size: 3.25rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #0f172a;
+    }
+
+    .page-subtitle {
+        font-size: 1.5rem;
+        color: #64748b;
+        margin-top: 0.5rem;
+    }
+
+    /* Header Buttons (Ultra Large) */
+    .btn-action-primary {
+        background: var(--primary-gradient);
+        border: none;
+        border-radius: 20px;
+        padding: 1.35rem 2.25rem;
+        font-weight: 800;
+        font-size: 1.35rem;
+        color: #ffffff !important;
+        box-shadow: 0 12px 24px -6px rgba(99, 102, 241, 0.45);
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+    }
+
+        .btn-action-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px -6px rgba(99, 102, 241, 0.55);
+            color: #ffffff !important;
+        }
+
+    .btn-action-secondary {
+        background: #ffffff;
+        border: 3px solid #cbd5e1;
+        border-radius: 20px;
+        padding: 1.35rem 2.25rem;
+        font-weight: 800;
+        font-size: 1.35rem;
+        color: #475569 !important;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+    }
+
+        .btn-action-secondary:hover {
+            background: #f1f5f9;
+            color: #0f172a !important;
+            border-color: #94a3b8;
+            transform: translateY(-3px);
+        }
+
+    .btn-action-success {
+        background: var(--success-gradient);
+        border: none;
+        border-radius: 20px;
+        padding: 1.35rem 2.25rem;
+        font-weight: 800;
+        font-size: 1.35rem;
+        color: #ffffff !important;
+        box-shadow: 0 12px 24px -6px rgba(16, 185, 129, 0.45);
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+    }
+
+        .btn-action-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px -6px rgba(16, 185, 129, 0.55);
+        }
+
+    /* Stat Cards (Massive & Premium) */
+    .stat-card {
+        background: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: 32px;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        position: relative;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.12), 0 0 20px rgba(0, 0, 0, 0.04);
+        }
+
+    .stat-accent {
+        height: 8px;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .stat-accent-indigo {
+        background: var(--primary-gradient);
+    }
+
+    .stat-accent-info {
+        background: var(--info-gradient);
+    }
+
+    .stat-accent-success {
+        background: var(--success-gradient);
+    }
+
+    .stat-body {
+        padding: 3.5rem 3rem;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .stat-icon-wrapper {
+        width: 90px;
+        height: 90px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .stat-icon-indigo {
+        background: #eef2ff;
+        color: #4f46e5;
+    }
+
+    .stat-icon-info {
+        background: #f0f9ff;
+        color: #0284c7;
+    }
+
+    .stat-icon-success {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .stat-icon-wrapper i {
+        font-size: 3.25rem;
+    }
+
+    .stat-title {
+        font-size: 1.35rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 4rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1;
+        margin: 0;
+    }
+
+    /* Chart Card */
+    .chart-card {
+        background: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: 32px;
+        box-shadow: var(--card-shadow);
+        padding: 3.5rem;
+        margin-top: 2rem;
+    }
+
+    .chart-header-title {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 2.5rem;
+    }
+
+    /* Mobile Responsive Breakpoints */
+    @@media (max-width: 991px) {
+        .page-title {
+            font-size: 2.75rem;
+        }
+
+        .stat-body {
+            padding: 2.5rem 2rem;
+            gap: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+        }
+
+        .stat-icon-wrapper {
+            width: 70px;
+            height: 70px;
+        }
+
+            .stat-icon-wrapper i {
+                font-size: 2.5rem;
+            }
+
+        .chart-card {
+            padding: 2.5rem 1.5rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-wrapper {
+            padding: 2rem 0.5rem;
+        }
+
+        .btn-action-primary, .btn-action-secondary, .btn-action-success {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .button-group {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .stat-body {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="container dashboard-wrapper">
+
+    <!-- Top Header & Action Buttons -->
+    <div class="d-flex flex-column flex-xl-row justify-content-between align-items-xl-center mb-5 gap-4">
+        <div>
+            <h2 class="page-title mb-2">System Dashboard</h2>
+            <p class="page-subtitle mb-0">Overview of platform metrics and analytics.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-3 button-group">
+            <a href="@Url.Action("Index", "Course")" class="btn-action-primary">
+                <i class="bi bi-journal-richtext"></i>
+                <span>Manage Courses</span>
+            </a>
+            <a href="@Url.Action("Index", "User")" class="btn-action-secondary">
+                <i class="bi bi-people-fill"></i>
+                <span>Manage Users</span>
+            </a>
+            <a href="@Url.Action("ExportEnrollmentsCsv", "Admin")" class="btn-action-success">
+                <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+                <span>Export CSV</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-5">
+
+        <!-- Total Students -->
+        <div class="col-12 col-lg-4">
+            <div class="stat-card">
+                <div class="stat-accent stat-accent-indigo"></div>
+                <div class="stat-body">
+                    <div class="stat-icon-wrapper stat-icon-indigo">
+                        <i class="bi bi-person-badge-fill"></i>
+                    </div>
+                    <div>
+                        <div class="stat-title">Total Students</div>
+                        <h2 class="stat-value">@Model.TotalUsers</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Courses -->
+        <div class="col-12 col-lg-4">
+            <div class="stat-card">
+                <div class="stat-accent stat-accent-info"></div>
+                <div class="stat-body">
+                    <div class="stat-icon-wrapper stat-icon-info">
+                        <i class="bi bi-collection-play-fill"></i>
+                    </div>
+                    <div>
+                        <div class="stat-title">Total Courses</div>
+                        <h2 class="stat-value">@Model.TotalCourses</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Enrollments -->
+        <div class="col-12 col-lg-4">
+            <div class="stat-card">
+                <div class="stat-accent stat-accent-success"></div>
+                <div class="stat-body">
+                    <div class="stat-icon-wrapper stat-icon-success">
+                        <i class="bi bi-bookmark-star-fill"></i>
+                    </div>
+                    <div>
+                        <div class="stat-title">Enrollments</div>
+                        <h2 class="stat-value">@Model.TotalEnrollments</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Visual Plot (Chart.js) -->
+    <div class="row">
+        <div class="col-12">
+            <div class="chart-card">
+                <h5 class="chart-header-title">
+                    <i class="bi bi-bar-chart-fill text-indigo me-2" style="color: #6366f1;"></i>
+                    Enrollments per Course
+                </h5>
+                <div class="position-relative" style="height: 450px; width: 100%;">
+                    <canvas id="enrollmentChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Include Chart.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Set global font styles for massive typography compatibility
+            Chart.defaults.font.family = "'Inter', system-ui, -apple-system, sans-serif";
+            Chart.defaults.font.size = 18;
+            Chart.defaults.color = '#64748b';
+
+            var chartLabels = @Html.Raw(labelsJson);
+            var chartData = @Html.Raw(dataJson);
+
+            var ctx = document.getElementById('enrollmentChart').getContext('2d');
+
+            // Create a gradient for the bars
+            var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, '#6366f1'); // Indigo 500
+            gradient.addColorStop(1, '#4338ca'); // Indigo 700
+
+            var enrollmentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: ' Students Enrolled',
+                        data: chartData,
+                        backgroundColor: gradient,
+                        hoverBackgroundColor: '#4f46e5',
+                        borderRadius: 12,
+                        borderSkipped: false,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleFont: { size: 20, weight: 'bold' },
+                            bodyFont: { size: 18 },
+                            padding: 16,
+                            cornerRadius: 12,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                padding: 15,
+                                font: { weight: '600' }
+                            },
+                            grid: {
+                                color: '#e2e8f0',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                padding: 15,
+                                font: { weight: '600' }
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}
