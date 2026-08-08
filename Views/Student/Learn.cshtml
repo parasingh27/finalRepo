@@ -1,0 +1,394 @@
+﻿@model LearningManagement.ViewModels.LearnViewModel
+
+@{
+    ViewBag.Title = Model.CurrentLessonTitle + " - " + Model.CourseName;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        --primary-hover: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --bg-gradient: radial-gradient(circle at 50% 0%, #eef2ff 0%, #f8fafc 100%);
+        --card-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.05), 0 0 10px rgba(0, 0, 0, 0.02);
+    }
+
+    body {
+        background: var(--bg-gradient);
+        min-height: 100vh;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: #334155;
+        font-size: 1.15rem;
+        line-height: 1.6;
+    }
+
+    .learn-wrapper {
+        padding: 2.5rem 1rem 6rem 1rem;
+    }
+
+    /* Course Sidebar Card */
+    .sidebar-card {
+        background: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: 24px;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        background: var(--primary-gradient);
+        color: #ffffff;
+        padding: 1.75rem 1.5rem;
+    }
+
+    .sidebar-title {
+        font-size: 1.35rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .progress-box-sidebar {
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(8px);
+        border-radius: 14px;
+        padding: 0.85rem 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .progress-custom-sidebar {
+        height: 8px;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .progress-bar-sidebar {
+        border-radius: 10px;
+        background: #34d399;
+    }
+
+    /* Lesson Navigation List */
+    .lesson-nav-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .lesson-nav-item {
+        border-bottom: 1px solid #f1f5f9;
+        transition: background 0.2s ease;
+    }
+
+        .lesson-nav-item:last-child {
+            border-bottom: none;
+        }
+
+    .lesson-link {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 1.1rem 1.25rem;
+        color: #475569;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.05rem;
+        transition: all 0.2s ease;
+    }
+
+        .lesson-link:hover:not(.locked) {
+            background-color: #f8fafc;
+            color: #6366f1;
+        }
+
+        .lesson-link.active {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            border-left: 5px solid #6366f1;
+            font-weight: 700;
+        }
+
+        .lesson-link.locked {
+            color: #94a3b8;
+            cursor: not-allowed;
+            background-color: #fafafa;
+        }
+
+    .lesson-badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: 800;
+        flex-shrink: 0;
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .active .lesson-badge {
+        background: #6366f1;
+        color: #ffffff;
+    }
+
+    /* Lesson Viewer Main Card */
+    .viewer-card {
+        background: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: 24px;
+        box-shadow: var(--card-shadow);
+        padding: 2.5rem;
+    }
+
+    .lesson-header-title {
+        font-size: 2.1rem;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .checkpoint-badge {
+        background: #fef3c7;
+        color: #d97706;
+        border: 1px solid #fde68a;
+        font-size: 0.85rem;
+        font-weight: 800;
+        padding: 0.35rem 0.85rem;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    /* Media Embed Containers */
+    .media-container {
+        border-radius: 18px;
+        overflow: hidden;
+        background: #0f172a;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-aspect-ratio {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+    }
+
+        .video-aspect-ratio iframe,
+        .video-aspect-ratio video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+    .pdf-box {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Content Area */
+    .lesson-content-body {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        color: #334155;
+    }
+
+    /* Bottom Complete Button */
+    .btn-complete {
+        background: var(--success-gradient);
+        border: none;
+        color: #ffffff;
+        border-radius: 14px;
+        padding: 1.1rem 2rem;
+        font-weight: 700;
+        font-size: 1.2rem;
+        box-shadow: 0 10px 20px -4px rgba(16, 185, 129, 0.4);
+        transition: all 0.25s ease;
+    }
+
+        .btn-complete:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 24px -4px rgba(16, 185, 129, 0.5);
+            color: #ffffff;
+        }
+
+    /* Mobile Responsive Breakdown */
+    @@media (max-width: 991px) {
+        .viewer-card {
+            padding: 1.75rem 1.25rem;
+        }
+
+        .lesson-header-title {
+            font-size: 1.65rem;
+        }
+    }
+</style>
+
+<div class="container learn-wrapper">
+    <!-- Back to Catalog Link -->
+    <div class="mb-4">
+        <a href="@Url.Action("MyCourses", "Student")" class="text-decoration-none fw-bold text-indigo d-inline-flex align-items-center gap-2 style=" color #6366f1;">
+            <i class="bi bi-arrow-left fs-5"></i>
+            <span>Back to My Courses</span>
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Sidebar: Lesson List & Progress -->
+        <div class="col-12 col-lg-4">
+            <div class="sidebar-card">
+                <div class="sidebar-header">
+                    <h3 class="sidebar-title">@Model.CourseName</h3>
+                    <div class="progress-box-sidebar mt-3">
+                        <div class="d-flex justify-content-between align-items-center text-white small fw-bold mb-1.5">
+                            <span>Course Progress</span>
+                            <span>@Model.CurrentProgress%</span>
+                        </div>
+                        <div class="progress progress-custom-sidebar">
+                            <div class="progress-bar progress-bar-sidebar" role="progressbar" style="width: @Model.CurrentProgress%;" aria-valuenow="@Model.CurrentProgress" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lessons Accordion/List -->
+                <ul class="lesson-nav-list">
+                    @foreach (var lesson in Model.Lessons)
+                    {
+                        bool isActive = lesson.LessonId == Model.CurrentLessonId;
+                        bool isLocked = lesson.IsLocked;
+
+                        <li class="lesson-nav-item">
+                            @if (isLocked)
+                            {
+                                <div class="lesson-link locked">
+                                    <span class="lesson-badge"><i class="bi bi-lock-fill"></i></span>
+                                    <span class="flex-grow-1 text-truncate">@lesson.LessonTitle</span>
+                                    @if (lesson.IsCheckpoint)
+                                    {
+                                        <i class="bi bi-star-fill text-warning" title="Checkpoint Lesson"></i>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Learn", "Student", new { courseId = Model.CourseId, lessonId = lesson.LessonId })" class="lesson-link @(isActive ? "active" : "")">
+                                    <span class="lesson-badge">@lesson.SequenceOrder</span>
+                                    <span class="flex-grow-1 text-truncate">@lesson.LessonTitle</span>
+                                    @if (lesson.IsCheckpoint)
+                                    {
+                                        <i class="bi bi-star-fill text-warning" title="Checkpoint Lesson"></i>
+                                    }
+                                    @if (isActive)
+                                    {
+                                        <i class="bi bi-play-circle-fill text-indigo"></i>
+                                    }
+                                </a>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Viewer: Lesson Content -->
+        <div class="col-12 col-lg-8">
+            <div class="viewer-card">
+
+                <!-- Error Message Banner -->
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-warning border-0 rounded-4 shadow-sm p-3.5 mb-4 d-flex align-items-center gap-3" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill text-warning fs-3"></i>
+                        <div class="fw-semibold">@Model.ErrorMessage</div>
+                    </div>
+                }
+
+                <!-- Header -->
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 pb-3 border-bottom">
+                    <div>
+                        <h2 class="lesson-header-title mb-1">@Model.CurrentLessonTitle</h2>
+                        <span class="text-muted small fw-medium">Lesson #@Model.CurrentLessonId</span>
+                    </div>
+
+                    @if (Model.IsCurrentCheckpoint)
+                    {
+                        <span class="checkpoint-badge">
+                            <i class="bi bi-award-fill me-1"></i> Checkpoint
+                        </span>
+                    }
+                </div>
+
+                <!-- Video Player (If URL exists) -->
+                @if (!string.IsNullOrEmpty(Model.CurrentVideoUrl))
+                {
+                    <div class="media-container">
+                        <div class="video-aspect-ratio">
+                            @if (Model.CurrentVideoUrl.Contains("youtube.com") || Model.CurrentVideoUrl.Contains("youtu.be"))
+                            {
+                                var embedUrl = Model.CurrentVideoUrl.Replace("watch?v=", "embed/");
+                                <iframe src="@embedUrl" allowfullscreen title="@Model.CurrentLessonTitle"></iframe>
+                            }
+                            else
+                            {
+                                <video controls>
+                                    <source src="@Model.CurrentVideoUrl" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- PDF Resource Attachment (If URL exists) -->
+                @if (!string.IsNullOrEmpty(Model.CurrentPdfUrl))
+                {
+                    <div class="pdf-box d-flex align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-file-earmark-pdf-fill text-danger fs-2"></i>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">Lesson Resource Material</h6>
+                                <p class="text-muted small mb-0">Download or view the PDF guide for this lesson</p>
+                            </div>
+                        </div>
+                        <a href="@Model.CurrentPdfUrl" target="_blank" class="btn btn-outline-primary rounded-3 fw-bold px-3 py-2">
+                            <i class="bi bi-download me-1"></i> Download PDF
+                        </a>
+                    </div>
+                }
+
+                <!-- Lesson Content Body -->
+                @if (!string.IsNullOrEmpty(Model.CurrentContent))
+                {
+                    <div class="lesson-content-body mb-5">
+                        @Html.Raw(Model.CurrentContent)
+                    </div>
+                }
+
+                <!-- Action Footer: Mark Complete Form -->
+                <div class="pt-4 border-top text-end">
+                    @using (Html.BeginForm("CompleteLesson", "Student", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("courseId", Model.CourseId)
+
+                        <button type="submit" class="btn btn-complete d-inline-flex align-items-center gap-2">
+                            <i class="bi bi-check-circle-fill fs-5"></i>
+                            <span>Mark Lesson as Complete</span>
+                        </button>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

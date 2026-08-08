@@ -1,0 +1,224 @@
+﻿@model LearningManagement.ViewModels.StudentProfileViewModel
+
+@{
+    ViewBag.Title = "My Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        --primary-hover: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        --bg-gradient: radial-gradient(circle at 50% 0%, #eef2ff 0%, #f8fafc 100%);
+        --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.07), 0 0 10px rgba(0, 0, 0, 0.02);
+        --icon-bg: #eef2ff;
+    }
+
+    body {
+        background: var(--bg-gradient);
+        min-height: 100vh;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    .profile-wrapper {
+        min-height: calc(100vh - 100px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1rem;
+    }
+
+    .profile-card {
+        background: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: 24px;
+        box-shadow: var(--card-shadow);
+        max-width: 520px;
+        width: 100%;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .card-header-accent {
+        height: 6px;
+        background: var(--primary-gradient);
+    }
+
+    .form-section {
+        padding: 3rem 2.5rem;
+    }
+
+    /* Icon Badge Container */
+    .profile-icon-wrapper {
+        width: 76px;
+        height: 76px;
+        background: var(--icon-bg);
+        border-radius: 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.25rem;
+    }
+
+    /* Floating Labels & Inputs */
+    .form-floating > .form-control {
+        border-radius: 12px;
+        border: 1.5px solid #e2e8f0;
+        background-color: #f8fafc;
+        height: 58px;
+        color: #1e293b;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .form-floating > label {
+        color: #64748b;
+        padding-left: 1rem;
+    }
+
+    .form-floating > .form-control:focus {
+        background-color: #ffffff;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    }
+
+    /* Read-only state for Email */
+    .form-control[readonly] {
+        background-color: #f1f5f9;
+        color: #64748b;
+        cursor: not-allowed;
+        border-color: #e2e8f0;
+    }
+
+    /* Primary Action Button (Enlarged) */
+    .btn-profile {
+        background: var(--primary-gradient);
+        border: none;
+        border-radius: 14px;
+        padding: 1.25rem 1.5rem;
+        font-weight: 700;
+        font-size: 1.2rem;
+        letter-spacing: 0.02em;
+        box-shadow: 0 12px 24px -5px rgba(99, 102, 241, 0.45);
+        transition: all 0.25s ease;
+        color: #ffffff;
+    }
+
+        .btn-profile:hover {
+            background: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px -5px rgba(99, 102, 241, 0.55);
+            color: #ffffff;
+        }
+
+        .btn-profile:active {
+            transform: translateY(0);
+        }
+
+    /* Helper Hints & Validation Text */
+    .field-validation-error {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .readonly-hint {
+        font-size: 0.825rem;
+        color: #94a3b8;
+        margin-top: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    /* Mobile Responsive Breakpoints */
+    @@media (max-width: 576px) {
+        .form-section {
+            padding: 2rem 1.5rem;
+        }
+
+        .profile-wrapper {
+            padding: 1rem 0.5rem;
+        }
+
+        .btn-profile {
+            padding: 1.1rem 1.25rem;
+            font-size: 1.1rem;
+        }
+    }
+</style>
+
+<div class="profile-wrapper">
+    <div class="profile-card">
+        <div class="card-header-accent"></div>
+        <div class="form-section">
+
+            <!-- Header section -->
+            <div class="text-center mb-4">
+                <div class="profile-icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#6366f1" class="bi bi-person-badge-fill" viewBox="0 0 16 16">
+                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm4.5 0a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zM8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m5 2.755C12.146 12.825 10.623 12 8 12s-4.146.826-5 1.755V14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1z" />
+                    </svg>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">My Profile</h3>
+                <p class="text-muted small mb-0">Manage and update your personal account information</p>
+            </div>
+
+            <!-- Alert Notification Messages -->
+            @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+            {
+                <div class="alert alert-success border-0 rounded-3 small py-2.5 px-3 mb-4 d-flex align-items-center" role="alert">
+                    <i class="bi bi-check-circle-fill me-2 fs-5 text-success"></i>
+                    <div class="fw-medium">@Model.SuccessMessage</div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger border-0 rounded-3 small py-2.5 px-3 mb-4 d-flex align-items-center" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2 fs-5 text-danger"></i>
+                    <div class="fw-medium">@Model.ErrorMessage</div>
+                </div>
+            }
+
+            @using (Html.BeginForm("Profile", "Student", FormMethod.Post, new { id = "profileForm" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.UserId)
+
+                <!-- Email Address (Read-only) -->
+                <div class="mb-3">
+                    <div class="form-floating">
+                        <label for="femail">Email Address</label>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", id = "femail", placeholder = "name@example.com", @readonly = "readonly" })
+                    </div>
+                    <div class="readonly-hint ms-1">
+                        <i class="bi bi-info-circle"></i> Email address is linked to your account and cannot be changed.
+                    </div>
+                </div>
+
+                <!-- Full Name -->
+                <div class="mb-4">
+                    <div class="form-floating">
+                        <label for="fname">Full Name</label>
+                        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", id = "fname", placeholder = "John Doe" })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger ms-1" })
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid pt-2">
+                    <button type="submit" class="btn btn-profile w-100">Update Profile</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+}

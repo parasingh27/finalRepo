@@ -1,0 +1,274 @@
+﻿@model LearningManagement.ViewModels.CheckoutViewModel
+
+@{
+    ViewBag.Title = "Checkout";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        --primary-hover: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --success-hover: linear-gradient(135deg, #059669 0%, #047857 100%);
+        --bg-gradient: radial-gradient(circle at 50% 0%, #eef2ff 0%, #f8fafc 100%);
+        --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.07), 0 0 10px rgba(0, 0, 0, 0.02);
+        --summary-bg: #f8fafc;
+    }
+
+    body {
+        background: var(--bg-gradient);
+        min-height: 100vh;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    .checkout-wrapper {
+        min-height: calc(100vh - 100px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1rem;
+    }
+
+    .checkout-card {
+        background: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: 24px;
+        box-shadow: var(--card-shadow);
+        max-width: 540px;
+        width: 100%;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .card-header-accent {
+        height: 6px;
+        background: var(--primary-gradient);
+    }
+
+    .form-section {
+        padding: 3rem 2.5rem;
+    }
+
+    /* Security Icon Badge Container */
+    .checkout-icon-wrapper {
+        width: 76px;
+        height: 76px;
+        background: #eef2ff;
+        border-radius: 22px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.25rem;
+    }
+
+    /* Order Summary Box */
+    .order-summary-box {
+        background-color: var(--summary-bg);
+        border: 1.5px dashed #cbd5e1;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .summary-badge {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 800;
+        color: #6366f1;
+    }
+
+    .course-title-display {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.35;
+    }
+
+    .amount-display {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: #059669;
+    }
+
+    /* Floating Labels & Inputs */
+    .form-floating > .form-control {
+        border-radius: 12px;
+        border: 1.5px solid #e2e8f0;
+        background-color: #f8fafc;
+        height: 58px;
+        color: #1e293b;
+        font-weight: 600;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .form-floating > label {
+        color: #64748b;
+        padding-left: 1rem;
+    }
+
+    .form-floating > .form-control:focus {
+        background-color: #ffffff;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    }
+
+    .form-floating > .form-control::placeholder {
+        color: transparent;
+    }
+
+    /* Primary Action Button (Enlarged) */
+    .btn-pay {
+        background: var(--success-gradient);
+        border: none;
+        border-radius: 14px;
+        padding: 1.25rem 1.5rem;
+        font-weight: 700;
+        font-size: 1.2rem;
+        letter-spacing: 0.02em;
+        box-shadow: 0 12px 24px -5px rgba(16, 185, 129, 0.45);
+        transition: all 0.25s ease;
+        color: #ffffff;
+    }
+
+        .btn-pay:hover {
+            background: var(--success-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 28px -5px rgba(16, 185, 129, 0.55);
+            color: #ffffff;
+        }
+
+        .btn-pay:active {
+            transform: translateY(0);
+        }
+
+    .security-footer {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+    }
+
+    /* Link Styling */
+    .auth-link {
+        color: #6366f1;
+        font-weight: 600;
+        transition: color 0.2s ease;
+    }
+
+        .auth-link:hover {
+            color: #4338ca;
+            text-decoration: underline !important;
+        }
+
+    /* Responsive Breakdown */
+    @@media (max-width: 576px) {
+        .form-section {
+            padding: 2rem 1.5rem;
+        }
+
+        .checkout-wrapper {
+            padding: 1rem 0.5rem;
+        }
+
+        .btn-pay {
+            padding: 1.1rem 1.25rem;
+            font-size: 1.1rem;
+        }
+
+        .course-title-display {
+            font-size: 1.2rem;
+        }
+
+        .amount-display {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+
+<div class="checkout-wrapper">
+    <div class="checkout-card">
+        <div class="card-header-accent"></div>
+        <div class="form-section">
+
+            <!-- Header section -->
+            <div class="text-center mb-4">
+                <div class="checkout-icon-wrapper">
+                    <i class="bi bi-shield-check text-indigo fs-1" style="color: #6366f1;"></i>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">Secure Checkout</h3>
+                <p class="text-muted small mb-0">Review your order details and complete enrollment</p>
+            </div>
+
+            <!-- Order Summary Card -->
+            <div class="order-summary-box">
+                <div class="summary-badge mb-1">
+                    <i class="bi bi-journal-bookmark-fill me-1"></i> Course Selection
+                </div>
+                <h4 class="course-title-display mb-3">@Model.CourseName</h4>
+
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-10">
+                    <span class="text-muted fw-semibold">Total Amount Due</span>
+                    <span class="amount-display">$@Model.Amount.ToString("0.00")</span>
+                </div>
+            </div>
+
+            @using (Html.BeginForm("ProcessDummyPayment", "Student", FormMethod.Post, new { id = "checkoutForm" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.CourseId)
+                @Html.HiddenFor(m => m.Amount)
+
+                <!-- Card Number Input -->
+                <div class="form-floating mb-3">
+                    <label for="fcard">Card Number (Demo)</label>
+                    <input type="text" name="CardNumber" class="form-control" id="fcard" placeholder="4111 1111 1111 1111" value="4111 1111 1111 1111" required />
+                </div>
+
+                <!-- Expiry Date & CVV Row -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-6">
+                        <div class="form-floating">
+                            <label for="fexpiry">Expiry Date</label>
+                            <input type="text" name="ExpiryDate" class="form-control" id="fexpiry" placeholder="MM/YY" value="12/25" required />
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-floating">
+                            <label for="fcvv">CVV</label>
+                            <input type="text" name="CVV" class="form-control" id="fcvv" placeholder="123" value="123" required />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid pt-1 mb-3">
+                    <button type="submit" class="btn btn-pay w-100 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-lock-fill"></i>
+                        <span>Pay $@Model.Amount.ToString("0.00") & Enroll Now</span>
+                    </button>
+                </div>
+            }
+
+            <!-- Security Assurance Footer -->
+            <div class="security-footer mt-4 text-center">
+                <i class="bi bi-shield-lock"></i>
+                <span>Encrypted 256-Bit SSL Demo Payment</span>
+            </div>
+
+            <div class="mt-4 pt-3 border-top text-center">
+                <p class="text-secondary small mb-0">
+                    Need to modify your order?
+                    @Html.ActionLink("Back to Catalog", "Index", "Student", null, new { @class = "auth-link text-decoration-none" })
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
