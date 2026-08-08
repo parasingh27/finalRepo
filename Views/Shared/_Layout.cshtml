@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - LMS Portal</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <style>
+        /* Typography Scaling Rules */
+        .navbar-brand {
+            font-size: 22px !important;
+            font-weight: 700 !important;
+        }
+
+        .navbar-nav > li > a {
+            font-size: 18px !important;
+            font-weight: 500 !important;
+        }
+
+        .navbar-text-greeting {
+            font-size: 17px !important;
+        }
+
+        .btn-logout-link {
+            font-size: 18px !important;
+            font-weight: 700 !important;
+            color: #ff4d4d !important;
+            text-decoration: none !important;
+            padding-top: 12px !important;
+        }
+
+        footer p {
+            font-size: 16px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="@Url.Action("Index", "Home", new { area = "" })">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px; vertical-align: text-bottom;">
+                        <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917z" />
+                        <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466z" />
+                    </svg>
+                    LMS Portal
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <li>@Html.ActionLink("Dashboard", "Dashboard", "Admin")</li>
+                            <li>@Html.ActionLink("Manage Courses", "Index", "Course")</li>
+                        }
+
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li>@Html.ActionLink("Manage Users", "Index", "User")</li>
+                        }
+
+                        if (User.IsInRole("User"))
+                        {
+                            <li>@Html.ActionLink("Course Catalog", "Index", "Student")</li>
+                            <li>@Html.ActionLink("My Courses", "MyCourses", "Student")</li>
+                            <li>@Html.ActionLink("My Profile", "Profile", "Student")</li>
+
+                        }
+                    }
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a href="javascript:void(0);" class="navbar-text-greeting">Hello, @User.Identity.Name</a></li>
+                        <li>
+                            @using (Html.BeginForm("Logout", "Auth", FormMethod.Post, new { id = "logoutForm", @class = "navbar-form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-link btn-logout-link">Logout</button>
+                            }
+                        </li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Login", "Login", "Auth")</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content" style="margin-top: 20px;">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - LMS Project</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
