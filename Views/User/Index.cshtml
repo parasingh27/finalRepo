@@ -1,0 +1,305 @@
+﻿@model LearningManagement.ViewModels.UserListViewModel
+
+@{
+    ViewBag.Title = "User Administration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        --primary-hover: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        --bg-gradient: radial-gradient(circle at 50% 0%, #eef2ff 0%, #f8fafc 100%);
+        --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.03);
+    }
+
+    body {
+        background: var(--bg-gradient);
+        min-height: 100vh;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: #1e293b;
+        font-size: 1.4rem; /* Massive baseline font size */
+    }
+
+    .management-wrapper {
+        padding: 5rem 1rem 7rem 1rem;
+    }
+
+    /* Page Header (Massive) */
+    .page-title {
+        font-size: 3.25rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #0f172a;
+    }
+
+    .page-subtitle {
+        font-size: 1.5rem;
+        color: #64748b;
+        margin-top: 0.5rem;
+    }
+
+    /* Success Alert (Massive) */
+    .alert-massive {
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        font-size: 1.4rem;
+        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Data Table Card (Massive) */
+    .card-table-wrapper {
+        background: #ffffff;
+        border-radius: 32px;
+        box-shadow: var(--card-shadow);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        overflow: hidden;
+        margin-top: 3rem;
+    }
+
+    .table-custom {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+        .table-custom thead th {
+            background: var(--primary-gradient) !important;
+            color: white;
+            font-weight: 800;
+            font-size: 1.5rem; /* Massive table headers */
+            border: none;
+            padding: 1.75rem 2rem;
+            white-space: nowrap;
+        }
+
+        .table-custom tbody td {
+            padding: 1.75rem 2rem; /* Massive row padding */
+            color: #334155;
+            font-size: 1.4rem; /* Massive row text */
+            font-weight: 600;
+            border-bottom: 1px solid #f1f5f9;
+            background: #ffffff;
+            transition: background 0.2s ease;
+        }
+
+        .table-custom tbody tr:hover td {
+            background: #f8fafc;
+        }
+
+    /* User Profile Info */
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        font-size: 1.45rem;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .user-email {
+        font-size: 1.25rem;
+        color: #64748b;
+        font-weight: 500;
+        margin-top: 0.2rem;
+    }
+
+    /* Badges (Massive) */
+    .role-badge {
+        background: #f1f5f9;
+        color: #475569;
+        border: 2px solid #e2e8f0;
+        font-weight: 800;
+        font-size: 1.25rem;
+        padding: 0.65rem 1.35rem;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    .role-admin {
+        background: #eef2ff;
+        color: #4f46e5;
+        border-color: #c7d2fe;
+    }
+
+    .badge-status {
+        font-weight: 800;
+        font-size: 1.25rem; /* Massive status badge */
+        padding: 0.55rem 1.35rem;
+        border-radius: 24px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .status-active {
+        background: #ecfdf5;
+        color: #059669;
+        border: 2px solid #a7f3d0;
+    }
+
+    .status-inactive {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 2px solid #fecaca;
+    }
+
+    /* Action Buttons (Table Rows - Massive) */
+    .action-btn {
+        border-radius: 14px;
+        font-weight: 800;
+        font-size: 1.25rem; /* Massive action buttons */
+        padding: 0.85rem 1.5rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-decoration: none;
+    }
+
+        .action-btn i {
+            font-size: 1.35rem; /* Massive icons inside buttons */
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+        }
+
+    .btn-edit {
+        background: #eef2ff;
+        color: #4f46e5;
+        border: 2px solid #c7d2fe;
+    }
+
+        .btn-edit:hover {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+    /* Mobile Responsive Breakpoints */
+    @@media (max-width: 991px) {
+        .page-title {
+            font-size: 2.75rem;
+        }
+
+        .table-custom tbody td {
+            padding: 1.5rem;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1rem;
+            font-size: 1.15rem;
+        }
+
+            .action-btn span {
+                display: none;
+            }
+        /* Hide text, keep icons on mobile */
+    }
+
+    @@media (max-width: 768px) {
+        .management-wrapper {
+            padding: 2rem 0.5rem;
+        }
+
+        .card-table-wrapper {
+            border-radius: 24px;
+        }
+    }
+</style>
+
+<div class="container management-wrapper">
+
+    <!-- Header Section -->
+    <div class="mb-5">
+        <h2 class="page-title mb-2">User Administration</h2>
+        <p class="page-subtitle mb-0">Manage system users, roles, and account statuses.</p>
+    </div>
+
+    <!-- Success Message -->
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-massive border-0 d-flex align-items-center alert-dismissible fade show mb-5" role="alert">
+            <i class="bi bi-check-circle-fill me-4 fs-1 text-success"></i>
+            <div class="fw-bold">
+                @Model.SuccessMessage
+            </div>
+            <button type="button" class="btn-close fs-3" data-bs-dismiss="alert" aria-label="Close" style="padding: 1.5rem;"></button>
+        </div>
+    }
+
+    <!-- Table Container Card -->
+    <div class="card-table-wrapper">
+        <div class="table-responsive">
+            <table class="table table-custom table-hover">
+                <thead>
+                    <tr>
+                        <th>User Details</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th class="text-end pe-5">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Users != null && Model.Users.Any())
+                    {
+                        foreach (var user in Model.Users)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <span class="user-name">@user.FullName</span>
+                                        <span class="user-email">@user.Email</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <!-- Add dynamic class if user is an Admin vs Regular User -->
+                                    <span class="role-badge @(user.RoleName == "Admin" ? "role-admin" : "")">
+                                        @user.RoleName
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="badge-status status-active">
+                                            <i class="bi bi-person-check-fill"></i> Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-status status-inactive">
+                                            <i class="bi bi-person-x-fill"></i> Inactive
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a href="@Url.Action("Edit", new { id = user.UserId })" class="action-btn btn-edit" title="Edit User">
+                                        <i class="bi bi-pencil-square"></i>
+                                        <span>Edit Profile</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-5">
+                                <div class="text-muted d-flex flex-column align-items-center justify-content-center my-5">
+                                    <i class="bi bi-people-fill mb-4 opacity-50" style="font-size: 4rem !important;"></i>
+                                    <span class="fs-3 fw-semibold">No users found in the system.</span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
