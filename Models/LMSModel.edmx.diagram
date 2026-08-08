@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="92ab587d4b24487f958719682d9c6532" Name="Diagram1">
+        <EntityTypeShape EntityType="LMS_DBModel.Category" Width="1.5" PointX="0.75" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="LMS_DBModel.Cours" Width="1.5" PointX="3" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="LMS_DBModel.Enrollment" Width="1.5" PointX="5.25" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LMS_DBModel.Lesson" Width="1.5" PointX="5.25" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LMS_DBModel.Role" Width="1.5" PointX="0.75" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="LMS_DBModel.User" Width="1.5" PointX="3" PointY="6.625" IsExpanded="true" />
+        <AssociationConnector Association="LMS_DBModel.FK_Courses_Categories" ManuallyRouted="false" />
+        <AssociationConnector Association="LMS_DBModel.FK_Enrollments_Courses" ManuallyRouted="false" />
+        <AssociationConnector Association="LMS_DBModel.FK_Lessons_Courses" ManuallyRouted="false" />
+        <AssociationConnector Association="LMS_DBModel.FK_Enrollments_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="LMS_DBModel.FK_Users_Roles" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
